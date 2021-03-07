@@ -117,7 +117,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         modal.addEventListener('click', (e) => {
-            e.target == modal || e.target == modalClose ? modalDisplaySwitch() : null;
+            if (e.target == modal || e.target == modalClose) modalDisplaySwitch();
         });
     }
 
@@ -155,33 +155,26 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    new Card(
-        "img/tabs/vegy.jpg",
-        'Меню "Фитнес"',
-        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        540
-    ).createElement();
+    async function getCards() {
+        const response = await fetch('http://localhost:3000/menu');
+        return response.json();
+    }
 
-    new Card(
-        "img/tabs/post.jpg",
-        'Меню "Постное"',
-        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-        840
-    ).createElement();
-
-    new Card(
-        "img/tabs/elite.jpg",
-        'Меню “Премиум”',
-        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-        1260
-    ).createElement();
-
+    getCards().then(cards => {
+        cards.forEach(card => {
+            new Card(
+                `${card.img}`,
+                `${card.title}`,
+                `${card.descr}`,
+                card.price
+            ).createElement();
+        });
+    });
 
 
     // Contact with me
 
-    const forms = document.querySelectorAll('form'),
-          request = new XMLHttpRequest();
+    const forms = document.querySelectorAll('form');
 
     forms.forEach(form => {
         form.addEventListener('submit', (event) => {
