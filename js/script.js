@@ -258,6 +258,4 @@ window.addEventListener('DOMContentLoaded', () => {
     function refrestSlider (currentSlider) {
         slidersOuter.style.transform = `translateX(-${parseInt(slideWidth)*currentSlider}px)`;
     }
-
-    
 });
