@@ -193,4 +193,71 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
 
+    // Slider
+
+    const slidersWrapper = document.querySelector('.offer__slider-wrapper');
+    const slidersOuter = document.querySelector('.offer__slider-outer');
+    const slideWidth = getComputedStyle(slidersWrapper).width;
+
+    const sliders = document.querySelectorAll('.offer__slide');
+    const sliderCurrentCounter = document.querySelector('#current');
+    const sliderTotalCounter = document.querySelector('#total');
+    const sliderButtonNext = document.querySelector('.offer__slider-next');
+    const sliderButtonPrev = document.querySelector('.offer__slider-prev');
+
+    const sliderIndicator = document.createElement('div');
+    sliderIndicator.classList.add('carousel-indicators');
+    slidersWrapper.append(sliderIndicator);
+
+    for(let i = 1; i <= sliders.length; i++) {
+        const indicatorDot = document.createElement('div');
+        indicatorDot.classList.add('dot');
+        indicatorDot.dataset.id = i - 1;
+        sliderIndicator.append(indicatorDot);
+    }
+
+    const indicatorsDot = document.querySelectorAll('.dot');
+
+    let currentSlider = 2;
+    refreshCounter();
+    
+    slidersOuter.style.width = `${parseInt(slideWidth) * sliders.length}px`;
+    slidersOuter.style.transform = `translateX(-${parseInt(slideWidth)*currentSlider}px)`;
+
+    sliderButtonNext.addEventListener('click', () => {
+        currentSlider == sliders.length-1 ? currentSlider = 0 : currentSlider++;
+        refrestSlider(currentSlider);
+        refreshCounter(currentSlider);
+    });
+
+    sliderButtonPrev.addEventListener('click', () => {
+        currentSlider == 0 ? currentSlider = +sliderTotalCounter.textContent-1 : currentSlider--;
+        refrestSlider(currentSlider);
+        refreshCounter(currentSlider);
+    });
+
+    indicatorsDot.forEach(indicator => {
+        indicator.addEventListener('click', (event) => {
+            console.log(event.target.dataset.id);
+            refreshCounter(parseInt(event.target.dataset.id));
+        });
+    });
+
+    function refreshCounter(index = currentSlider) {
+        sliderTotalCounter.textContent = addZeroToNumber(sliders.length);
+        sliderCurrentCounter.textContent = addZeroToNumber(index + 1);
+
+        indicatorsDot.forEach(indicator => {
+            indicator.style.opacity = 0.5;
+        });
+
+        indicatorsDot[index].style.opacity = 1;
+        refrestSlider(index);
+    }
+
+    function refrestSlider (currentSlider) {
+        slidersOuter.style.transform = `translateX(-${parseInt(slideWidth)*currentSlider}px)`;
+    }
+
+    
 });
