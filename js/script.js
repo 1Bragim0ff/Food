@@ -220,7 +220,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let currentSlider = 2;
     refreshCounter();
-    
     slidersOuter.style.width = `${parseInt(slideWidth) * sliders.length}px`;
     slidersOuter.style.transform = `translateX(-${parseInt(slideWidth)*currentSlider}px)`;
 
@@ -238,7 +237,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     indicatorsDot.forEach(indicator => {
         indicator.addEventListener('click', (event) => {
-            console.log(event.target.dataset.id);
             refreshCounter(parseInt(event.target.dataset.id));
         });
     });
@@ -258,4 +256,79 @@ window.addEventListener('DOMContentLoaded', () => {
     function refrestSlider (currentSlider) {
         slidersOuter.style.transform = `translateX(-${parseInt(slideWidth)*currentSlider}px)`;
     }
+
+
+    // Calculator
+
+    const chooseGender = document.querySelector('#gender');
+    const chooseAction = document.querySelector('#action');
+    const chooseConstitution = document.querySelector('#constitution');
+
+    calculateCalories();
+
+    chooseGender.addEventListener('click', (event) => {
+        if(event.target.classList.contains('calculating__choose-item')) {
+            refreshChoose(event.target);
+            calculateCalories();
+        }
+    });
+
+    chooseAction.addEventListener('click', (event) => {
+        if(event.target.classList.contains('calculating__choose-item')) {
+            refreshChoose(event.target);
+            calculateCalories();
+        }
+    });
+
+    chooseConstitution.addEventListener('input', (event) => {
+        calculateCalories();
+    });
+
+    
+    function refreshChoose(item) {
+        for(let child of item.parentElement.children) {
+            child.classList.remove('calculating__choose-item_active');
+        }
+        item.classList.add('calculating__choose-item_active');
+    }
+
+    function calculateCalories() {
+        let selectedGender;
+        let selectedAction;
+        
+        let userHeight = document.querySelector('#height').value;
+        let userWeight = document.querySelector('#weight').value;
+        let userAge = document.querySelector('#age').value;
+        let calorieRate = document.querySelector('.calculating__result').querySelector('span');
+        let BMR;
+
+        for(let item of chooseGender.children) {
+            if(item.classList.contains('calculating__choose-item_active')) {
+                selectedGender = item.textContent;
+            }
+        }
+
+        for(let item of chooseAction.children) {
+            if(item.classList.contains('calculating__choose-item_active')) {
+                item.textContent === 'Низкая активность' ? selectedAction = 1.375 :
+                item.textContent === 'Невысокая активность' ? selectedAction = 1.55 :
+                item.textContent === 'Умеренная активность' ? selectedAction = 1.725 :
+                item.textContent === 'Высокая активность' ? selectedAction = 1.9 : undefined;
+            }
+        }
+
+        // для мужчин: BMR = 88.36 + (13.4 x вес, кг) + (4.8 х рост, см) – (5.7 х возраст, лет)
+        // для женщин: BMR = 447.6 + (9.2 x вес, кг) + (3.1 х рост, cм) – (4.3 х возраст, лет)
+
+        if (selectedGender === 'Мужчина') {
+            BMR = 88.36 + (13.4 * +userWeight) + (3.1 * +userHeight) - (5.7 * userAge);
+            calorieRate.textContent = (BMR * selectedAction).toFixed(0);
+        } else if (selectedGender === 'Женщина') {
+            BMR = 447.6 + (9.2 * +userWeight) + (3.1 * +userHeight) - (4.3 * userAge);
+            calorieRate.textContent = (BMR * selectedAction).toFixed(0);
+        }
+
+    }
+
+
 });
