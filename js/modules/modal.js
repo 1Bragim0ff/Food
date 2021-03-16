@@ -27,32 +27,3 @@ export default class Modal {
         });
     }
 }
-
-
-
-
-
-
-
-
-
-
-//     function modalDisplaySwitch() {
-//         if (getComputedStyle(modal).display === 'none') {
-//             modal.style.display = 'block';
-//         } else {
-//             modal.style.display = 'none';
-//         }
-//     }
-
-//     function watchModal() {
-//         ConnectWithUsButtons.forEach(item => {
-//             item.addEventListener('click', modalDisplaySwitch);
-//         });
-
-//         modal.addEventListener('click', (e) => {
-//             if (e.target == modal || e.target == modalClose) modalDisplaySwitch();
-//         });
-//     }
-
-//     watchModal();
