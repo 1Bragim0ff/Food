@@ -1,334 +1,85 @@
-"use strict";
-
+import Tabs from './modules/tabs.js';
+import Timer from './modules/timer.js';
+import Modal from './modules/modal.js';
+import Card from './modules/cards.js';
+import Contacts from './modules/contacts.js';
+import Slider from './modules/slider.js';
+import Calculator from './modules/calculator.js';
 
 window.addEventListener('DOMContentLoaded', () => {
 
-    // Tabs
-
-    const tabs = document.querySelectorAll('.tabheader__item'),
-          tabsContent = document.querySelectorAll('.tabcontent'),
-          tabsParent = document.querySelector('.tabheader__items');
-      
-    tabsParent.addEventListener('click', (event) => {
-        if(event.target.classList.contains('tabheader__item')){
-            tabs.forEach( (item, i) => {
-                if (item == event.target) {
-                    hideTabsContent();
-                    showTabsContent(i);
-                }
-            });
-        }
-    });
-
-    hideTabsContent();
-    showTabsContent();
-
-    function hideTabsContent() {
-        tabsContent.forEach( item => {
-            item.classList.add('hide');
-            item.classList.remove('fade');
-        });
-
-        tabs.forEach(item => {
-            item.classList.remove('tabheader__item_active');
-        });
+    try {
+        new Tabs({
+            tabsSelector: '.tabheader__item',
+            tabsContentSelector: '.tabcontent',
+            tabsParentSelector: '.tabheader__items',
+        }).init();
+    } catch(e) {
+        console.error(e);
     }
 
-    function showTabsContent(index = 0) {
-        tabsContent[index].classList.add('fade');
-        tabsContent[index].classList.remove('hide');
-        
-        tabs[index].classList.add('tabheader__item_active');
+    try {
+        new Timer({
+            timerDaysSelector: '#days',
+            timerHoursSelector: '#hours',
+            timerMinutesSelector: '#minutes',
+            timerSecondsSelector: '#seconds',
+            date: '2021-04-17'
+        }).init();
+    } catch(e) {
+        console.error(e);
     }
 
-    // Timer
-
-    const timerDays = document.querySelector('#days'),
-          timerHours = document.querySelector('#hours'),
-          timerMinutes = document.querySelector('#minutes'),
-          timerSeconds = document.querySelector('#seconds');
-
-
-    setTimeForTimer();
-    let timer = setInterval(setTimeForTimer, 1000);
-
-    function addZeroToNumber(number) {
-        if(number <= 9) {
-            return `0${number}`;
-        }
-        return number;
+    try {
+        new Modal({
+            modalSelector: '.modal',
+            ButtonSelector: 'button[data-modal]',
+            modalCloseSelector: 'div[data-close]',
+        }).init();
+    } catch(e) {
+        console.error(e);
     }
 
-    function calcTimeForTimer(date) {
-        let specifiedDate = new Date(date);
-        let currentDate = new Date();
-
-        let differenceBetweenDate = specifiedDate - currentDate;
-
-        let days = Math.floor(differenceBetweenDate / (1000 * 60 * 60 * 24));
-        let hours = Math.floor((differenceBetweenDate / (1000 * 60 * 60) % 24));
-        let minutes = Math.floor((differenceBetweenDate / 1000 / 60) % 60);
-        let seconds = Math.floor((differenceBetweenDate / 1000) % 60);
-
-        return {
-            "days": days, 
-            "hours": hours, 
-            "minutes": minutes, 
-            "seconds": seconds,
-        };
+    try {
+        new Card({
+            menuFieldSelector: '.menu__field',
+            urlGet: 'http://localhost:3000/menu',
+        }).init();    
+    } catch(e) {
+        console.error(e);
     }
 
-    function setTimeForTimer() {
-        let {days, hours, minutes, seconds} = calcTimeForTimer('2021-02-26');
-
-        if (seconds < 0) {
-            timerDays.textContent = 0;
-            timerHours.textContent = 0;
-            timerMinutes.textContent = 0;
-            timerSeconds.textContent = 0;
-        } else {
-            timerDays.textContent = addZeroToNumber(days);
-            timerHours.textContent = addZeroToNumber(hours);
-            timerMinutes.textContent = addZeroToNumber(minutes);
-            timerSeconds.textContent = addZeroToNumber(seconds);
-        }
-
-        
-        
+    try {    
+        new Contacts({
+            form: 'form',
+            urlPost: 'server.php',
+        }).init();
+    } catch(e) {
+        console.error(e);
     }
 
-    // Modal
-
-    const modal = document.querySelector('.modal');
-    const ConnectWithUsButtons = document.querySelectorAll('button[data-modal]');
-    const modalClose = document.querySelector('div[data-close]');
-
-    function modalDisplaySwitch() {
-        if (getComputedStyle(modal).display === 'none') {
-            modal.style.display = 'block';
-        } else {
-            modal.style.display = 'none';
-        }
+    try {    
+        new Slider({
+            slidersWrapperSelector: '.offer__slider-wrapper',
+            slidersOuterSelector: '.offer__slider-outer',
+            slidersSelector: '.offer__slide',
+            sliderCurrentCounterSelector: '#current',
+            sliderTotalCounterSelector: '#total',
+            sliderButtonNextSelector: '.offer__slider-next',
+            sliderButtonPrevSelector: '.offer__slider-prev',
+        }).init();
+    } catch(e) {
+        console.error(e);
     }
 
-    function watchModal() {
-        ConnectWithUsButtons.forEach(item => {
-            item.addEventListener('click', modalDisplaySwitch);
-        });
-
-        modal.addEventListener('click', (e) => {
-            if (e.target == modal || e.target == modalClose) modalDisplaySwitch();
-        });
+    try {    
+        new Calculator({
+            chooseGenderSelector: '#gender',
+            chooseActionSelector: '#action',
+            chooseConstitutionSelector: '#constitution',
+        }).init();
+    } catch(e) {
+        console.error(e);
     }
-
-    watchModal();
-
-    // Cards
-
-    const menuFieldContainer = document.querySelector('.menu__field').children[0];
-
-    class Card {
-        constructor(srcImage, subtitle, description, price) {
-            this.srcImage = srcImage;
-            this.subtitle = subtitle;
-            this.description = description;
-            this.price = price;
-        }
-
-        createElement() {
-            const element = document.createElement('div');
-            element.classList.add("menu__item");
-
-            element.innerHTML = `
-            <img src=${this.srcImage} alt="photo">
-            <h3 class="menu__item-subtitle">${this.subtitle}</h3>
-            <div class="menu__item-descr">${this.description}</div>
-            <div class="menu__item-divider"></div>
-            <div class="menu__item-price">
-                <div class="menu__item-cost">Цена:</div>
-                <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
-            </div>
-            `;
-
-            menuFieldContainer.append(element);
-
-        }
-    }
-
-    async function getCards() {
-        const response = await fetch('http://localhost:3000/menu');
-        return response.json();
-    }
-
-    getCards().then(cards => {
-        cards.forEach(card => {
-            new Card(
-                `${card.img}`,
-                `${card.title}`,
-                `${card.descr}`,
-                card.price
-            ).createElement();
-        });
-    });
-
-
-    // Contact with me
-
-    const forms = document.querySelectorAll('form');
-
-    forms.forEach(form => {
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-
-            const formData = new FormData(form);
-
-            fetch('server.php', {
-                method: "POST",
-                body: formData,
-            })
-            .then( response => response.text() )
-            .then( response => console.log(response));
-
-        });
-    });
-
-
-    // Slider
-
-    const slidersWrapper = document.querySelector('.offer__slider-wrapper');
-    const slidersOuter = document.querySelector('.offer__slider-outer');
-    const slideWidth = getComputedStyle(slidersWrapper).width;
-
-    const sliders = document.querySelectorAll('.offer__slide');
-    const sliderCurrentCounter = document.querySelector('#current');
-    const sliderTotalCounter = document.querySelector('#total');
-    const sliderButtonNext = document.querySelector('.offer__slider-next');
-    const sliderButtonPrev = document.querySelector('.offer__slider-prev');
-
-    const sliderIndicator = document.createElement('div');
-    sliderIndicator.classList.add('carousel-indicators');
-    slidersWrapper.append(sliderIndicator);
-
-    for(let i = 1; i <= sliders.length; i++) {
-        const indicatorDot = document.createElement('div');
-        indicatorDot.classList.add('dot');
-        indicatorDot.dataset.id = i - 1;
-        sliderIndicator.append(indicatorDot);
-    }
-
-    const indicatorsDot = document.querySelectorAll('.dot');
-
-    let currentSlider = 2;
-    refreshCounter();
-    slidersOuter.style.width = `${parseInt(slideWidth) * sliders.length}px`;
-    slidersOuter.style.transform = `translateX(-${parseInt(slideWidth)*currentSlider}px)`;
-
-    sliderButtonNext.addEventListener('click', () => {
-        currentSlider == sliders.length-1 ? currentSlider = 0 : currentSlider++;
-        refrestSlider(currentSlider);
-        refreshCounter(currentSlider);
-    });
-
-    sliderButtonPrev.addEventListener('click', () => {
-        currentSlider == 0 ? currentSlider = +sliderTotalCounter.textContent-1 : currentSlider--;
-        refrestSlider(currentSlider);
-        refreshCounter(currentSlider);
-    });
-
-    indicatorsDot.forEach(indicator => {
-        indicator.addEventListener('click', (event) => {
-            refreshCounter(parseInt(event.target.dataset.id));
-        });
-    });
-
-    function refreshCounter(index = currentSlider) {
-        sliderTotalCounter.textContent = addZeroToNumber(sliders.length);
-        sliderCurrentCounter.textContent = addZeroToNumber(index + 1);
-
-        indicatorsDot.forEach(indicator => {
-            indicator.style.opacity = 0.5;
-        });
-
-        indicatorsDot[index].style.opacity = 1;
-        refrestSlider(index);
-    }
-
-    function refrestSlider (currentSlider) {
-        slidersOuter.style.transform = `translateX(-${parseInt(slideWidth)*currentSlider}px)`;
-    }
-
-
-    // Calculator
-
-    const chooseGender = document.querySelector('#gender');
-    const chooseAction = document.querySelector('#action');
-    const chooseConstitution = document.querySelector('#constitution');
-
-    calculateCalories();
-
-    chooseGender.addEventListener('click', (event) => {
-        if(event.target.classList.contains('calculating__choose-item')) {
-            refreshChoose(event.target);
-            calculateCalories();
-        }
-    });
-
-    chooseAction.addEventListener('click', (event) => {
-        if(event.target.classList.contains('calculating__choose-item')) {
-            refreshChoose(event.target);
-            calculateCalories();
-        }
-    });
-
-    chooseConstitution.addEventListener('input', (event) => {
-        calculateCalories();
-    });
-
-    
-    function refreshChoose(item) {
-        for(let child of item.parentElement.children) {
-            child.classList.remove('calculating__choose-item_active');
-        }
-        item.classList.add('calculating__choose-item_active');
-    }
-
-    function calculateCalories() {
-        let selectedGender;
-        let selectedAction;
-        
-        let userHeight = document.querySelector('#height').value;
-        let userWeight = document.querySelector('#weight').value;
-        let userAge = document.querySelector('#age').value;
-        let calorieRate = document.querySelector('.calculating__result').querySelector('span');
-        let BMR;
-
-        for(let item of chooseGender.children) {
-            if(item.classList.contains('calculating__choose-item_active')) {
-                selectedGender = item.textContent;
-            }
-        }
-
-        for(let item of chooseAction.children) {
-            if(item.classList.contains('calculating__choose-item_active')) {
-                item.textContent === 'Низкая активность' ? selectedAction = 1.375 :
-                item.textContent === 'Невысокая активность' ? selectedAction = 1.55 :
-                item.textContent === 'Умеренная активность' ? selectedAction = 1.725 :
-                item.textContent === 'Высокая активность' ? selectedAction = 1.9 : undefined;
-            }
-        }
-
-        // для мужчин: BMR = 88.36 + (13.4 x вес, кг) + (4.8 х рост, см) – (5.7 х возраст, лет)
-        // для женщин: BMR = 447.6 + (9.2 x вес, кг) + (3.1 х рост, cм) – (4.3 х возраст, лет)
-
-        if (selectedGender === 'Мужчина') {
-            BMR = 88.36 + (13.4 * +userWeight) + (3.1 * +userHeight) - (5.7 * userAge);
-            calorieRate.textContent = (BMR * selectedAction).toFixed(0);
-        } else if (selectedGender === 'Женщина') {
-            BMR = 447.6 + (9.2 * +userWeight) + (3.1 * +userHeight) - (4.3 * userAge);
-            calorieRate.textContent = (BMR * selectedAction).toFixed(0);
-        }
-
-    }
-
 
 });
